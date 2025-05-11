@@ -24,17 +24,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.json());
 app.use(cookieParser());
 
-interface CorsOptions {
-    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => void;
-    credentials: boolean;
-}
-
-const corsOptions: CorsOptions = {
-    origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void): void {
-        callback(null, true); 
-    },
+const corsOptions = {
+    origin: "http://localhost:5000",
     credentials: true
-};
+}
 app.use(cors(corsOptions));
 
 // api
