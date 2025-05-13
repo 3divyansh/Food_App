@@ -4,7 +4,7 @@ import axios from "axios";
 import { LoginInputState, SignupInputState } from "@/schema/userSchema";
 import { toast } from "sonner";
 
-const API_END_POINT = "http://localhost:5000/api/v1/user"
+const API_END_POINT = "http://localhost:5000/api/v1/user";
 axios.defaults.withCredentials = true;
 
 type User = {
@@ -34,29 +34,28 @@ type UserState = {
     updateProfile: (input:any) => Promise<void>; 
 }
 
-export const useUserStore = create<UserState>()(persist((set) => ({
-    user: null,
-    isAuthenticated: false,
-    isCheckingAuth: true,
-    loading: false,
-    // signup api implementation
-    signup: async (input: SignupInputState) => {
+export const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      user: null,
+      isAuthenticated: false,
+      isCheckingAuth: true,
+      loading: false,
+      signup: async (input: SignupInputState) => {
         try {
-            set({ loading: true });
-            const response = await axios.post(`${API_END_POINT}/signup`, input, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.data.success) { 
-                toast.success(response.data.message);
-                set({ loading: false, user: response.data.user, isAuthenticated: true });
-            }
+          set({ loading: true });
+          const response = await axios.post(`${API_END_POINT}/signup`, input, {
+            headers: { 'Content-Type': 'application/json' },
+          });
+          if (response.data.success) {
+            toast.success(response.data.message);
+            set({ loading: false, user: response.data.user, isAuthenticated: true });
+          }
         } catch (error: any) {
-            toast.error(error.response.data.message);
-            set({ loading: false });
+          toast.error(error.response.data.message);
+          set({ loading: false });
         }
-    },
+      },
     login: async (input: LoginInputState) => {
         try {
             set({ loading: true });
@@ -80,6 +79,7 @@ export const useUserStore = create<UserState>()(persist((set) => ({
             const response = await axios.post(`${API_END_POINT}/verify-email`, { verificationCode }, {
                 headers: {
                     'Content-Type': 'application/json'
+                    
                 }
             });
             if (response.data.success) {
@@ -93,7 +93,7 @@ export const useUserStore = create<UserState>()(persist((set) => ({
     },
     checkAuthentication: async () => {
         try {
-            set({ isCheckingAuth: true });
+            set({isAuthenticated: true, isCheckingAuth: true });
             const response = await axios.get(`${API_END_POINT}/check-auth`);
             if (response.data.success) {
                 set({user: response.data.user, isAuthenticated: true, isCheckingAuth: false });
@@ -157,8 +157,14 @@ export const useUserStore = create<UserState>()(persist((set) => ({
         }
     }
 }),
-    {
-        name: 'user-name',
-        storage: createJSONStorage(() => localStorage),
+     {
+      name: "user-name",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+        isCheckingAuth: state.isCheckingAuth,
+        loading: state.loading,
+      }),
     }
 ))

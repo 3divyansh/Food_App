@@ -18,17 +18,23 @@ const PORT = process.env.PORT ;
 
 const DIRNAME = path.resolve();
 
-// default middleware for any mern project
+
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.json());
 app.use(cookieParser());
 
-const corsOptions = {
-    origin: "http://localhost:5000",
-    credentials: true
-}
-app.use(cors(corsOptions));
+
+// const corsOptions = {
+//     origin: "https://localhost:5173",
+//     credentials: true,
+// }
+// app.use(cors(corsOptions));
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true, 
+}));
 
 // api
 app.use("/api/v1/user", userRoute);
@@ -36,13 +42,15 @@ app.use("/api/v1/restaurant", restaurantRoute);
 app.use("/api/v1/menu", menuRoute);
 app.use("/api/v1/order", orderRoute);
 
-app.use(express.static(path.join(DIRNAME, "/client/dist")));
-app.use("*", (_, res) => {
-    res.sendFile(path.resolve(DIRNAME, "client", "dist", "index.html"));
-});
+// app.use(express.static(path.join(DIRNAME,"/client/dist")));
+
+// app.use("*",(_,res) => {
+//     res.sendFile(path.resolve(DIRNAME, "client","dist","index.html"));
+// });
+
+app.use(express.static(path.join(DIRNAME, "client", "dist")));
 
 app.listen(PORT, () => {
     connectDB();
-  console.log("Server running on port", PORT);
+    console.log(`Server listen at port ${PORT}`);
 });
-

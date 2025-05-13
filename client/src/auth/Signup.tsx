@@ -33,12 +33,15 @@ const navigate = useNavigate();
             return;
         }
         // login api implementation start here
+        console.log("input", input);
+        
         try {
           await signup(input);
           navigate("/verify-email");
         } catch (error) {
           console.log(error);
         }
+        console.log(" checking input", input);
     }
   
   return (

@@ -10,6 +10,7 @@ import { sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail, s
 export const signup = async (req: Request, res: Response) => {
     try {
         const { fullname, email, password, contact } = req.body;
+
         let user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({
@@ -41,7 +42,7 @@ export const signup = async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal server error" })
-    }  
+    }
 };
 export const login = async (req: Request, res: Response) => {
     try {
